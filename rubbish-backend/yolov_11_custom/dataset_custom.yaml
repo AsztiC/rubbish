@@ -1,0 +1,6 @@
+train: C:\Users\aszti\OneDrive\Documents\GitHub\rubbish\rubbish-backend\yolov_11_custom\train
+val: C:\Users\aszti\OneDrive\Documents\GitHub\rubbish\rubbish-backend\yolov_11_custom\val
+
+nc: 8
+
+names: ["battery", "bottle", "can", "cardboard", "metal", "paper", "plastic bag", "wrapper"]
