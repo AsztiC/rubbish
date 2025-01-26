@@ -16,7 +16,7 @@ void setup() {
   Serial.println("Ready to receive commands. Format: <channel> <position>");
 }
 
-// Read serial commands from pc to control a servo
+// Read serial commands from pc to control a servo  
 void loop() {
   if (Serial.available()) {
     String command = Serial.readStringUntil('\n');
