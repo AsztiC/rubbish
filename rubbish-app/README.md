@@ -1,10 +1,8 @@
-# rubbish
-How to run frontend.
+# Rubbish
 
-Set up Flutter dev environment
+**How to run the frontend:**
 
-Open project
-
-Connect device
-
-Run main.dart file
+1. Set up a Flutter development environment.
+2. Open the project.
+3. Connect a device (physical or emulator).
+4. Run the `main.dart` file.
