@@ -4,7 +4,7 @@ from backend import Backend
 
 app = Flask(__name__)
 
-run_backend = False
+run_backend = True
 
 # Shared data storage
 integers_data = [0] * 8  # Default 8 integers
