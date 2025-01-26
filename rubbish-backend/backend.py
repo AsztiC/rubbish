@@ -11,7 +11,7 @@ class Backend:
         self._booleans = booleans
         self._lock = Lock()  # Thread-safe lock
         # Servo controller
-        self.servo_controller = ServoController(port_name="COM8")
+        #self.servo_controller = ServoController(port_name="COM8")
         self.down_count = 0
         self.up_count = 0
 

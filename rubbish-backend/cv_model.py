@@ -19,13 +19,14 @@ class ObjectDetection:
         cap.set(4, height)
         return cap
 
-    def load_model(self, model_path="best.pt"):
+    def load_model(self, model_path="last.pt"):
         """Loads the YOLO model."""
         return YOLO(model_path)
 
     def process_frame(self, img):
         """Processes a single frame: runs the model and draws bounding boxes."""
         results = self.model(img, stream=True)
+        print(results)
         object_list = []
 
         for r in results:
@@ -38,7 +39,7 @@ class ObjectDetection:
                 #print("Confidence --->", confidence)
                 #print("Class name -->", self.class_names[cls])
 
-                if confidence > 0.25:
+                if confidence > 0.05:
                     # Draw bounding box and label
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
                     cv2.putText(
