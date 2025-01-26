@@ -65,7 +65,7 @@ class Backend:
         while object_detector is None:
             pass
         while True:
-            min_frame_count = 4
+            min_frame_count = 2
             object_list,img = object_detector.get_objects()
             print(object_list)
             can_recycle = self.check_recycle(object_list)
@@ -79,6 +79,8 @@ class Backend:
                     self.servo_controller.down(1)
                     self.servo_controller.neutral(1)
                 object_detector.get_objects()
+                object_detector.get_objects()
+                object_detector.get_objects()
             elif (can_recycle == 1):
                 self.down_count = 0
                 self.up_count += 1
@@ -87,6 +89,8 @@ class Backend:
                     self.add_list(object_list)
                     self.servo_controller.up(1)
                     self.servo_controller.neutral(1)
+                    object_detector.get_objects()
+                    object_detector.get_objects()
                     object_detector.get_objects()
             else:
                 self.down_count = 0
