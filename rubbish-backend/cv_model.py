@@ -39,7 +39,7 @@ class ObjectDetection:
                 #print("Confidence --->", confidence)
                 #print("Class name -->", self.class_names[cls])
 
-                if confidence > 0.05:
+                if confidence > 0.30:
                     # Draw bounding box and label
                     cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
                     cv2.putText(
@@ -74,5 +74,5 @@ if __name__ == "__main__":
     object_detector = ObjectDetection()
     while True:
         object_list,img = object_detector.get_objects()
-        print(object_list)
+        #print(object_list)
 
