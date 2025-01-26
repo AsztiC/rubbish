@@ -1,57 +1,78 @@
 from ultralytics import YOLO
 import cv2
-import math 
-# start webcam
-cap = cv2.VideoCapture(0)
-cap.set(3, 640)
-cap.set(4, 480)
+import math
 
-# model
-model = YOLO("best.pt")
+class ObjectDetection:
+    def __init__(self, model_path="best.pt", camera_index=4, width=640, height=480, class_names=None):
+        """Initializes the ObjectDetection class with the model, camera, and class names."""
+        if class_names is None:
+            class_names = ["battery", "bottle", "can", "cardboard", "metal", "paper", "plastic bag", "wrapper"]
+        
+        self.class_names = class_names
+        self.model = self.load_model(model_path)
+        self.cap = self.initialize_webcam(camera_index, width, height)
 
-# object classes
-classNames = ["target"]
+    def initialize_webcam(self, camera_index=4, width=640, height=480):
+        """Initializes the webcam with specified resolution."""
+        cap = cv2.VideoCapture(camera_index)
+        cap.set(3, width)
+        cap.set(4, height)
+        return cap
 
+    def load_model(self, model_path="last.pt"):
+        """Loads the YOLO model."""
+        return YOLO(model_path)
 
-while True:
-    success, img = cap.read()
-    results = model(img, stream=True)
+    def process_frame(self, img):
+        """Processes a single frame: runs the model and draws bounding boxes."""
+        results = self.model(img, stream=True)
+        print(results)
+        object_list = []
 
-    # coordinates
-    for r in results:
-        boxes = r.boxes
+        for r in results:
+            boxes = r.boxes
+            for box in boxes:
+                x1, y1, x2, y2 = map(int, box.xyxy[0])  # bounding box coordinates
+                confidence = math.ceil((box.conf[0] * 100)) / 100  # confidence level
+                cls = int(box.cls[0])  # class index
 
-        for box in boxes:
-            # bounding box
-            x1, y1, x2, y2 = box.xyxy[0]
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2) # convert to int values
+                #print("Confidence --->", confidence)
+                #print("Class name -->", self.class_names[cls])
 
-            
+                if confidence > 0.05:
+                    # Draw bounding box and label
+                    cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                    cv2.putText(
+                        img,
+                        f"{self.class_names[cls]}, {confidence}",
+                        (x1, y1),cv2.FONT_HERSHEY_SIMPLEX,1,(255, 0, 0),2)
+                    
+                    # Add object to found list
+                    object_list.append(self.class_names[cls])
+        
+        return object_list
 
-            # confidence
-            confidence = math.ceil((box.conf[0]*100))/100
-            print("Confidence --->",confidence)
-            
+    def get_objects(self):
+        success, img = self.cap.read()
+        if not success:
+            print("Failed to capture image from webcam.")
+            return
+        # Process frame and display results
+        object_list = self.process_frame(img)
 
-            # class name
-            cls = int(box.cls[0])
-            print("Class name -->", classNames[cls])
+        cv2.imshow('Webcam', img)
+        if cv2.waitKey(1) == ord('q'):  # Exit loop on 'q' key press
+            return
+        
+        return object_list,img
+    
+    def kill(self):
+        self.cap.release()
+        cv2.destroyAllWindows()
 
-            # object details
-            org = [x1, y1]
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            fontScale = 1
-            color = (255, 0, 0)
-            thickness = 2
+if __name__ == "__main__":
+    object_detector = ObjectDetection()
+    while True:
+        object_list,img = object_detector.get_objects()
+        print(object_list)
 
-            if(confidence > 0.7):
-                # put box in cam
-                cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
-                cv2.putText(img, f"{classNames[cls]}, {confidence}", org, font, fontScale, color, thickness)
-                
-    cv2.imshow('Webcam', img)
-    if cv2.waitKey(1) == ord('q'):
-        break
-
-cap.release()
-cv2.destroyAllWindows()
