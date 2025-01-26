@@ -8,7 +8,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<int> integers = [1, 1, 1, 1, 1, 1, 1, 2];
+  List<int> integers = [];
   List<String> items = [
     "batteries",
     "bottles",
@@ -42,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _loadIntegers();
     currentText = texts[0];
   }
 
@@ -87,23 +88,24 @@ class _HomePageState extends State<HomePage> {
                       pieTouchData: PieTouchData(
                         touchCallback: (FlTouchEvent event, pieTouchResponse) {
                           if (event is FlTapUpEvent && pieTouchResponse?.touchedSection != null) {
+          
                             final index = pieTouchResponse!.touchedSection!.touchedSectionIndex;
-
-                            if (!_isDialogShowing && index != null && index != -1) {
+                            List<int> filteredIntegers = integers.where((value) => value != 0).toList();                       
+                            if (!_isDialogShowing && index != -1 && filteredIntegers[index] != 0) {
                               String rubbish = item[index];
-                              if (integers[index] > 1){
+                              if (filteredIntegers[index] > 1){
                                 rubbish = items[index];
                               }
                               _isDialogShowing = true;
                               setState(() {
                                 touchedIndex = index;
                               });
-                          
+                              
                               showDialog(
                                 context: context,
                                 builder: (context) => AlertDialog(
                                   title: Text('Woohoo!'),
-                                  content: Text('You have thrown away ${integers[index]} $rubbish'),
+                                  content: Text('You have thrown away ${filteredIntegers[index]} $rubbish'),
                                 ),
                               ).then((_) {             
                                 setState(() {
@@ -130,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Text(
-                        '${integers.reduce((a, b) => a + b)}',
+                        '${integers.isNotEmpty ? integers.reduce((a, b) => a + b) : 0}',
                         style: TextStyle(
                           fontSize: 36,
                           fontWeight: FontWeight.bold,
@@ -158,7 +160,7 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               width: double.infinity,
               height: 150,
-              color: Colors.blueAccent,
+              color: const Color.fromARGB(255, 71, 51, 107),
               alignment: Alignment.center,
               child: Padding(
                 padding: EdgeInsets.all(16.0),
@@ -210,7 +212,6 @@ class _HomePageState extends State<HomePage> {
     return List.generate(integers.length, (index) {
       final value = integers[index];
       final percentage = value / total;
-
       bool isSelected = touchedIndex == index;
 
       return PieChartSectionData(
