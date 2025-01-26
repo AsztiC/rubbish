@@ -1,12 +1,14 @@
-# rubbish
+# Rubbish
 
-How to run backend:
-Create a virtual python environment with python 3.11
-Activate the virtual environment
-pip install ultralytics
-pip install flask
-pip install pyserial
+**How to run backend:**
+1. Create a virtual python environment with python 3.11
+2. Activate the virtual environment
+3. Install required libraries:
+    * pip install ultralytics
+    * pip install flask
+    * pip install pyserial
 
-python flask_api.py
+4. Run the backend server:
+    python flask_api.py
 
-This will run the flask API ad spawn the controller in another thread with the computer vision model and servo logic.
+This will run the Flask API and spawn the controller in another thread with the computer vision model and servo logic.
